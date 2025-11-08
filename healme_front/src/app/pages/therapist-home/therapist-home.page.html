@@ -1,0 +1,55 @@
+<!-- therapist-home.page.html -->
+<ion-header>
+  <ion-toolbar>
+    <ion-title>My Patients</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()" fill="clear">
+        <ion-icon slot="icon-only" name="log-out"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="therapist-home-content">
+    <div class="bg-elements">
+    <div class="bubble bubble-1"></div>
+    <div class="bubble bubble-2"></div>
+    <div class="bubble bubble-3"></div>
+  </div>
+
+  <div class="container">
+    <!-- Header Section -->
+    <div class="header-section">
+      <h1>Patient Directory</h1>
+      <p>Manage conversations with your patients</p>
+    </div>
+
+    <div *ngIf="isLoading" class="loading">
+      <ion-spinner></ion-spinner>
+      <p>Loading patients...</p>
+    </div>
+
+    <ion-list *ngIf="!isLoading">
+      <ion-item 
+        *ngFor="let patient of patients" 
+        (click)="openChat(patient)"
+        button 
+        detail
+        class="glass-effect">
+        <ion-avatar slot="start">
+          <ion-icon name="person-circle"></ion-icon>
+        </ion-avatar>
+        <ion-label>
+          <h2>{{ patient.patient_name }}</h2>
+          <p>{{ patient.patient_email }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <div *ngIf="!isLoading && patients.length === 0" class="empty-state">
+      <ion-icon name="people-outline"></ion-icon>
+      <h3>No Patients Found</h3>
+      <p>There are no patients in the system yet.</p>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,73 @@
+<ion-content class="ion-padding custom-content">
+  
+  <!-- Background Bubbles -->
+  <div class="bg-elements">
+    <div class="bubble bubble-1"></div>
+    <div class="bubble bubble-2"></div>
+    <div class="bubble bubble-3"></div>
+  </div>
+
+    <ion-button class="logout-btn" fill="clear" (click)="logout()">
+    <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
+  </ion-button>
+
+  <div style="text-align: center; margin-top: 20px" class="title">
+    <h1 style="font-size: 2.5rem">HealMe</h1>
+  </div>
+ <div class="page-header">
+    <h2>Welcome back, {{userName}}</h2>
+    <p>Here's how you're doing today.</p>
+  </div>
+  <!-- Mood Tracker Card -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Your Mood</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="mood-days">
+        <div class="mood-day" *ngFor="let humeur of recentHumeurs.slice().reverse()">
+          <div class="mood-emoji" [class]="getMoodEmojiClass(humeur.niveau)">
+            {{ getMoodEmoji(humeur.niveau) }}
+          </div>
+          <div class="day-label">{{ humeur.date | date:'EEE' }}</div>
+        </div>
+      </div>
+    </ion-card-content>
+    <ion-card-content class="ai-insight">
+      {{ getMoodInsight() }}
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Sleep Tracker Card -->
+  <ion-card>
+  <ion-card-header>
+    <ion-card-title>Your Sleep</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <canvas #sleepCanvas></canvas>
+  </ion-card-content>
+  <ion-card-content class="ai-insight">
+    {{ getSleepInsight() }}
+  </ion-card-content>
+</ion-card>
+
+
+  <!-- Journal Card -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Latest Journal Entry</ion-card-title>
+    </ion-card-header>
+    <ion-card-content *ngIf="journal">
+      <h2>{{ journal.date | date:'mediumDate' }}</h2>
+      <p class="journal-content">{{ getJournalPreview() }}</p>
+      <ion-button expand="block" fill="clear" (click)="readMore()">Read More</ion-button>
+    </ion-card-content>
+    <ion-card-content *ngIf="!journal">
+      <p>No journal entries yet.</p>
+    </ion-card-content>
+    <ion-card-content class="ai-insight" *ngIf="journal">
+      {{ getJournalInsight() }}
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

@@ -1,0 +1,146 @@
+<ion-content class="add-data-content">
+        <div class="bg-elements">
+    <div class="bubble bubble-1"></div>
+    <div class="bubble bubble-2"></div>
+    <div class="bubble bubble-3"></div>
+  </div>
+  <div class="add-data-container">
+    <div class="add-data-header">
+      <h1 class="add-data-title">How Are You Doing?</h1>
+      <p class="add-data-subtitle">Track your mood, sleep, and daily reflections</p>
+    </div>
+
+
+
+    <!-- Tab Navigation -->
+<ion-segment [value]="activeTab" (ionChange)="setActiveTab($event)">
+  <ion-segment-button value="mood">
+    <ion-icon name="happy"></ion-icon>
+
+  </ion-segment-button>
+  <ion-segment-button value="sleep">
+    <ion-icon name="bed"></ion-icon>
+
+  </ion-segment-button>
+  <ion-segment-button value="journal">
+    <ion-icon name="book"></ion-icon>
+
+  </ion-segment-button>
+</ion-segment>
+    <!-- Mood Tab -->
+    <div *ngIf="activeTab === 'mood'" class="tab-content">
+      <div class="add-data-form">
+        <div class="form-group">
+          <label class="input-label">Date</label>
+          <ion-item class="input-item">
+            <ion-input type="date" [(ngModel)]="moodData.date"></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-group">
+          <label class="input-label">Mood Level (1-10)</label>
+          <ion-item class="input-item">
+            <ion-range 
+              min="1" 
+              max="10" 
+              step="1" 
+              snaps="true" 
+              [(ngModel)]="moodData.niveau"
+              color="primary">
+              <ion-label slot="start">1</ion-label>
+              <ion-label slot="end">10</ion-label>
+            </ion-range>
+            <ion-text class="range-value">{{moodData.niveau}}</ion-text>
+          </ion-item>
+        </div>
+
+        <div class="form-group">
+          <label class="input-label">Description</label>
+          <ion-item class="input-item">
+            <ion-textarea 
+              [(ngModel)]="moodData.description" 
+              placeholder="How are you feeling?"
+              rows="4">
+            </ion-textarea>
+          </ion-item>
+        </div>
+
+        <ion-button expand="block" (click)="addMood()" class="add-button">
+          Add Mood Entry
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Sleep Tab -->
+    <div *ngIf="activeTab === 'sleep'" class="tab-content">
+      <div class="add-data-form">
+        <div class="form-group">
+          <label class="input-label">Date</label>
+          <ion-item class="input-item">
+            <ion-input type="date" [(ngModel)]="sleepData.date"></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-group">
+          <label class="input-label">Sleep Duration (hours)</label>
+          <ion-item class="input-item">
+            <ion-range 
+              min="0" 
+              max="12" 
+              step="0.5" 
+              snaps="true" 
+              [(ngModel)]="sleepData.dureeHeures"
+              color="primary">
+              <ion-label slot="start">0h</ion-label>
+              <ion-label slot="end">12h</ion-label>
+            </ion-range>
+            <ion-text class="range-value">{{sleepData.dureeHeures}} hours</ion-text>
+          </ion-item>
+        </div>
+
+        <div class="form-group">
+          <label class="input-label">Sleep Quality</label>
+          <ion-item class="input-item">
+            <ion-select [(ngModel)]="sleepData.qualite" interface="action-sheet">
+              <ion-select-option *ngFor="let option of qualityOptions" [value]="option.value">
+                {{option.label}}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+
+        <ion-button expand="block" (click)="addSleep()" class="add-button">
+          Add Sleep Data
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Journal Tab -->
+    <div *ngIf="activeTab === 'journal'" class="tab-content">
+      <div class="add-data-form">
+        <div class="form-group">
+          <label class="input-label">Date</label>
+          <ion-item class="input-item">
+            <ion-input type="date" [(ngModel)]="journalData.date"></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-group">
+          <label class="input-label">Journal Entry</label>
+          <ion-item class="input-item">
+            <ion-textarea 
+              [(ngModel)]="journalData.contenu" 
+              placeholder="Write about your day..."
+              rows="6"
+              autoGrow="true">
+            </ion-textarea>
+          </ion-item>
+        </div>
+
+        <ion-button expand="block" (click)="addJournal()" class="add-button">
+          Add Journal Entry
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

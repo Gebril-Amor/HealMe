@@ -1,0 +1,7 @@
+{
+  "name": "healme_front",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

@@ -1,0 +1,245 @@
+
+:root {
+  --ion-color-primary: #ff64ff;
+  --ion-color-secondary: #64c8ff;
+  --ion-color-tertiary: #b450dc;}
+/*
+ion-card {
+  background-color: rgba(83, 52, 174, 0.5);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border-radius: 20px;
+  
+  color: #000;
+  margin: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+ion-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+}
+
+
+ion-card-title {
+  font-size: 1.2rem; 
+
+  color: #fff;
+  font-weight: 0;
+  letter-spacing: 0.5px;
+}
+
+ion-card-content {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+
+ion-button {
+  --background: rgba(255, 255, 255, 0.2);
+  --color: #fff;
+  --border-radius: 12px;
+  --background-activated: rgba(255, 255, 255, 0.3);
+  --background-focused: rgba(255, 255, 255, 0.25);
+  margin-top: 8px;
+  backdrop-filter: blur(10px);
+}
+
+
+ion-button:hover {
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+
+ion-footer {
+  --background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+ion-item {
+  --background: transparent; 
+  color: rgba(255, 255, 255, 0.9);
+}
+
+ion-label {
+  font-size: 0.85rem; 
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+
+
+ion-list ion-item {
+  margin-bottom: 6px;
+  border-radius: 10px;
+  padding: 4px 8px;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+
+ion-label h2 {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+ion-label p {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+
+ion-list {
+  background: transparent !important;
+  --ion-item-background: transparent !important;
+}
+
+ion-toolbar {
+  --background: rgba(83, 52, 174,1);
+  --color: white;
+}*/
+
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+
+body, ion-app {
+  font-family: 'Montserrat', sans-serif;
+}
+
+
+.mood-days {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.mood-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mood-emoji {
+  font-size: 24px;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+  
+  &.mood-1 { background-color: rgba(var(--ion-color-danger-rgb), 0.1); }
+  &.mood-2 { background-color: rgba(var(--ion-color-warning-rgb), 0.1); }
+  &.mood-3 { background-color: rgba(var(--ion-color-success-rgb), 0.1); }
+  &.mood-4 { background-color: rgba(var(--ion-color-primary-rgb), 0.1); }
+  &.mood-5 { background-color: rgba(var(--ion-color-medium-rgb), 0.1); }
+}
+
+.day-label {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--ion-color-medium);
+}
+
+.sleep-graph {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 120px;
+}
+
+.sleep-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.sleep-bar-container {
+  height: 80px;
+  width: 20px;
+  background-color: var(--ion-color-light);
+  border-radius: 10px;
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.sleep-bar {
+  width: 100%;
+  background-color: var(--ion-color-primary);
+  border-radius: 10px;
+  position: absolute;
+  bottom: 0;
+  transition: height 1s ease-in-out;
+}
+
+.sleep-hours {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.sleep-label {
+  font-size: 12px;
+  color: var(--ion-color-medium);
+}
+
+.journal-content {
+  line-height: 1.5;
+  margin-bottom: 16px;
+  white-space: pre-line;
+}
+
+.ai-insight {
+  background-color: var(--ion-color-light);
+  font-style: italic;
+  font-size: 14px;
+  border-top: 1px solid var(--ion-color-light-shade);
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+
+.page-header h2 {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0;
+
+  -webkit-background-clip: text;
+  color: var(--ion-color-secondary);
+}
+
+.page-header p {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin: 4px 0 0 0;
+}
+
+.title {
+
+  color: var(--ion-color-primary);
+}
+
+.logout-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 20;
+  --color: var(--text);
+  --padding-start: 0;
+  --padding-end: 0;
+  --ripple-color: transparent;
+}
+
+.logout-btn ion-icon {
+  font-size: 26px;
+  color: var(--text);
+  transition: 0.2s;
+}
+
+.logout-btn:hover ion-icon {
+  color: var(--ion-color-primary);
+  transform: scale(1.1);
+}
+
