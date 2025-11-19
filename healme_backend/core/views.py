@@ -13,6 +13,10 @@ from django.shortcuts import get_object_or_404
 from .models import User, Humeur, Sommeil, Journal, Patient
 from .serializers import HumeurSerializer, SommeilSerializer, JournalSerializer
 from rest_framework.decorators import *
+from django.http import JsonResponse
+from django.views import View
+from google import genai
+import os
 
 @api_view(['GET'])
 def get_user_mood(request, user_id):
@@ -389,7 +393,6 @@ def therapist_conversations(request, therapist_id):
     except Exception as e:
         return Response({'error': str(e)}, status=400)
 
-# core/views.py - Updated therapist_conversations view
 
 # core/views.py - Add this simple view
 @api_view(['GET'])
@@ -413,3 +416,178 @@ def all_patients(request):
         
     except Exception as e:
         return Response({'error': str(e)}, status=400)
+    
+
+# --- Initialization ---
+# Get API Key securely from environment variables
+GEMINI_API_KEY = 'AIzaSyAk7mY_lYgwcP5Yyx80aczY78hbN5iGG7w'
+# Initialize the client (make sure GEMINI_API_KEY is set in your .env)
+client = genai.Client(api_key=GEMINI_API_KEY) 
+model_name = 'gemini-2.5-flash'
+
+class GeminiTestView(View):
+    """
+    A simple Django view to test the connection to the Gemini API.
+    Access this route in your browser to see the result.
+    """
+    def get(self, request, *args, **kwargs):
+        # 1. Define the test prompt
+        test_prompt = "Explain the concept of Django REST Framework in one concise sentence."
+        
+        try:
+            # 2. Call the Gemini API
+            print(f"Sending prompt to Gemini: '{test_prompt}'")
+            response = client.models.generate_content(
+                model=model_name,
+                contents=test_prompt
+            )
+            
+            # 3. Format the result for JSON response
+            ai_response_text = response.text
+            
+            return JsonResponse({
+                'status': 'success',
+                'prompt_sent': test_prompt,
+                'model_used': model_name,
+                'ai_response': ai_response_text
+            }, status=200)
+
+        except Exception as e:
+            # 4. Handle errors (e.g., key not set, API connection failed)
+            print(f"Error calling Gemini API: {e}")
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Failed to connect to or get a response from the Gemini API.',
+                'detail': str(e)
+            }, status=500)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_user_mood_insight(request, user_id):
+    """
+    Get moods for a user + AI insight (Gemini)
+    """
+    try:
+        user = get_object_or_404(User, id=user_id)
+        moods = Humeur.objects.filter(patient=user).order_by('-date')
+        serializer = HumeurSerializer(moods, many=True)
+
+        if not moods.exists():
+            return Response({
+                "moods": [],
+                "ai_insight": "No mood data to analyze."
+            }, status=200)
+
+        mood_text = "\n".join([f"{m.date}: Niveau {m.niveau} - {m.description if m.description else 'Aucune note'}" for m in moods if m.description])
+
+        ai_prompt = f"""
+Please generate a one phrases that suggests activities or advice (an activity that patient can do to imporve health) based on the following mood data:
+
+{mood_text}
+"""
+
+        response = client.models.generate_content(
+            model=model_name,
+            contents=ai_prompt
+        )
+
+        ai_result = response.text
+
+        return Response({
+            "ai_insight": ai_result
+        }, status=200)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+    
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_user_sleep_insight(request, user_id):
+    """
+    Get sleep data for a user + AI insight (Gemini)
+    """
+    try:
+        user = get_object_or_404(User, id=user_id)
+        sleeps = Sommeil.objects.filter(patient=user).order_by('-date')
+        serializer = SommeilSerializer(sleeps, many=True)
+
+        if not sleeps.exists():
+            return Response({
+                "sleep": [],
+                "ai_insight": "No sleep data to analyze."
+            }, status=200)
+
+        # Format sleep data for AI
+        sleep_text = "\n".join([
+            f"{s.date}: {s.dureeHeures} hours, quality = {s.qualite}"
+            for s in sleeps
+        ])
+
+        ai_prompt = f"""
+Please generate one single phrase of sleep advice based on this person's sleep patterns.
+Make the suggestion practical and short.
+
+Sleep data:
+
+{sleep_text}
+"""
+
+        response = client.models.generate_content(
+            model=model_name,
+            contents=ai_prompt
+        )
+
+        ai_result = response.text
+
+        return Response({
+            "ai_insight": ai_result
+        }, status=200)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_user_journal_insight(request, user_id):
+    """
+    Get journal entries for a user + AI insight (Gemini)
+    """
+    try:
+        user = get_object_or_404(User, id=user_id)
+        journals = Journal.objects.filter(patient=user).order_by('-date')
+        serializer = JournalSerializer(journals, many=True)
+
+        if not journals.exists():
+            return Response({
+                "journal": [],
+                "ai_insight": "No journal entries to analyze."
+            }, status=200)
+
+        # Format journal text for AI
+        journal_text = "\n".join([
+            f"{j.date}: {j.contenu[:200]}..."
+            for j in journals
+        ])
+
+        ai_prompt = f"""
+Please summarize the emotional tone of this person's journal entries in one short sentence.
+Avoid deep analysis, keep it supportive and simple.
+
+Journal entries:
+
+{journal_text}
+"""
+
+        response = client.models.generate_content(
+            model=model_name,
+            contents=ai_prompt
+        )
+
+        ai_result = response.text
+
+        return Response({
+            "ai_insight": ai_result
+        }, status=200)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)

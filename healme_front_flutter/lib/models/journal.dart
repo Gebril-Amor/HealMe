@@ -20,4 +20,13 @@ class Journal {
       patientId: json['patient'] ?? 0,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'contenu': contenu,
+      'date': date.toIso8601String(),
+      'patient': patientId,
+    };
+  }
 }

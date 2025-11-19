@@ -28,4 +28,9 @@ urlpatterns = [
     path('api/therapist/<int:therapist_id>/conversations/', views.therapist_conversations, name='therapist_conversations'),
     path('all-patients/', views.all_patients, name='all_patients'),
     path('', include(router.urls)),
+    path('test-gemini/', GeminiTestView.as_view(), name='test-gemini-api'),
+    path("moods/<int:user_id>/insights/", get_user_mood_insight),
+    path("sleep/<int:user_id>/insights/", get_user_sleep_insight),
+    path("journal/<int:user_id>/insights/", get_user_journal_insight),
+
 ]

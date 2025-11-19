@@ -228,4 +228,50 @@ Future<Journal> addJournal(Map<String, dynamic> journalData) async {
     throw Exception('Failed to add journal data: ${response.statusCode}. Response: ${response.body}');
   }
 }
+
+ // In your ApiService class
+Future<String> getUserMoodInsight(int userId) async {
+  final response = await http.get(
+    Uri.parse('$baseUrl/moods/$userId/insights/'),
+    headers: headers,
+  );
+
+  if (response.statusCode == 200) {
+    final jsonResponse = json.decode(response.body);
+    // Extract the ai_insight from the JSON response
+    return jsonResponse['ai_insight'] ?? 'No mood insight available';
+  } else {
+    throw Exception('Failed to load mood insights: ${response.statusCode}');
+  }
+}
+
+Future<String> getUserSleepInsight(int userId) async {
+  final response = await http.get(
+    Uri.parse('$baseUrl/sleep/$userId/insights/'),
+    headers: headers,
+  );
+
+  if (response.statusCode == 200) {
+    final jsonResponse = json.decode(response.body);
+    // Extract the ai_insight from the JSON response
+    return jsonResponse['ai_insight'] ?? 'No sleep insight available';
+  } else {
+    throw Exception('Failed to load sleep insights: ${response.statusCode}');
+  }
+}
+
+Future<String> getUserJournalInsight(int userId) async {
+  final response = await http.get(
+    Uri.parse('$baseUrl/journal/$userId/insights/'),
+    headers: headers,
+  );
+
+  if (response.statusCode == 200) {
+    final jsonResponse = json.decode(response.body);
+    // Extract the ai_insight from the JSON response
+    return jsonResponse['ai_insight'] ?? 'No journal insight available';
+  } else {
+    throw Exception('Failed to load journal insights: ${response.statusCode}');
+  }
+}
 }
