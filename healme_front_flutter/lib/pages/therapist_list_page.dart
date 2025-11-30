@@ -8,6 +8,7 @@ import '../theme/app_text_styles.dart';
 import '../theme/app_decorations.dart';
 import '../widgets/app_scaffold.dart';
 import 'chat_page.dart';
+import '../widgets/bottom_nav_bar.dart';
 
 class TherapistListPage extends StatefulWidget {
   @override
@@ -283,6 +284,31 @@ class _TherapistListPageState extends State<TherapistListPage> {
                 ),
               ],
             ),
+                       
+  bottomNavigationBar: CustomBottomNavBar(
+    currentIndex: 4, // Journal tab index
+    onTap: (index) {
+      if (index == 4) return; // Stay on journal page
+
+      switch (index) {
+        case 0:
+          Navigator.pushReplacementNamed(context, '/home');
+          break;
+        case 1:
+          Navigator.pushReplacementNamed(context, '/mood');
+          break;
+        case 3:
+          Navigator.pushReplacementNamed(context, '/journal');
+          break;
+        case 2:
+          Navigator.pushReplacementNamed(context, '/sleep');
+          break;
+        default:
+          return;
+      }
+    },
+  ),
+            
     );
   }
 }

@@ -8,6 +8,11 @@ import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 import '../theme/app_decorations.dart';
 import '../widgets/app_scaffold.dart';
+import '../widgets/bottom_nav_bar.dart';
+import 'home_page.dart';
+import 'sleep_tracker_page.dart';
+import 'therapist_list_page.dart';
+import 'journal_tracker_page.dart';
 
 class MoodTrackerPage extends StatefulWidget {
   @override
@@ -18,8 +23,7 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
   final List<Mood> _moodHistory = [];
   bool _isLoading = true;
   bool _isSubmitting = false;
-  
-  // Form data
+
   int _moodLevel = 5;
   String _notes = '';
   final TextEditingController _notesController = TextEditingController();
@@ -33,7 +37,7 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
   Future<void> _loadMoodHistory() async {
     final authService = Provider.of<AuthService>(context, listen: false);
     final userId = authService.currentUser?.id;
-    
+
     if (userId == null) return;
 
     try {
@@ -55,7 +59,7 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
 
     final authService = Provider.of<AuthService>(context, listen: false);
     final userId = authService.currentUser?.id;
-    
+
     if (userId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -67,9 +71,7 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
       return;
     }
 
-    setState(() {
-      _isSubmitting = true;
-    });
+    setState(() => _isSubmitting = true);
 
     try {
       await ApiService().addMood({
@@ -87,16 +89,13 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
         ),
       );
 
-      // Reset form
       setState(() {
         _moodLevel = 5;
         _notes = '';
         _notesController.clear();
       });
 
-      // Reload history
       _loadMoodHistory();
-
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -106,9 +105,7 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
         ),
       );
     } finally {
-      setState(() {
-        _isSubmitting = false;
-      });
+      setState(() => _isSubmitting = false);
     }
   }
 
@@ -148,18 +145,52 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
   Widget build(BuildContext context) {
     return AppScaffold(
       appBar: AppBar(
-        title: Text(
-          'Mood Tracker',
-          style: AppTextStyles.headline1,
-        ),
+        title: Text('Mood Tracker', style: AppTextStyles.headline1),
         backgroundColor: AppColors.secondary,
         elevation: 0,
       ),
+
+      // 👉 BOTTOM NAV BAR ADDED HERE
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: 1, // Mood Page
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => HomePage()),
+              );
+              break;
+            case 1:
+              break; // Already on Mood
+            case 2:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => SleepTrackerPage()),
+              );
+              break;
+            case 3:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => JournalTrackerPage()),
+              );
+              break;
+            case 4:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => TherapistListPage()),
+              );
+              break;
+          }
+        },
+      ),
+
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
             // Mood Input Section
             Container(
               decoration: AppDecorations.glassCard,
@@ -174,8 +205,7 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    
-                    // Mood Level Display
+
                     Container(
                       padding: EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -204,8 +234,7 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    
-                    // Mood Slider
+
                     Column(
                       children: [
                         Slider(
@@ -214,26 +243,16 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                           max: 10,
                           divisions: 9,
                           label: '$_moodLevel',
-                          onChanged: (value) {
-                            setState(() {
-                              _moodLevel = value.round();
-                            });
-                          },
+                          onChanged: (value) =>
+                              setState(() => _moodLevel = value.round()),
                           activeColor: AppColors.secondary,
                           inactiveColor: AppColors.glass,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('1', style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
-                            Text('10', style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
-                          ],
-                        ),
                       ],
                     ),
+
                     SizedBox(height: 20),
-                    
-                    // Notes
+
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
@@ -244,12 +263,18 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                       ),
                       child: TextField(
                         controller: _notesController,
-                        style: AppTextStyles.bodyLarge.copyWith(color: AppColors.text),
+                        style: AppTextStyles.bodyLarge.copyWith(
+                          color: AppColors.text,
+                        ),
                         decoration: InputDecoration(
                           labelText: 'Notes (optional)',
-                          labelStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+                          labelStyle: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
                           hintText: 'Any thoughts about your mood...',
-                          hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+                          hintStyle: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.all(16),
                           filled: true,
@@ -260,8 +285,7 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    
-                    // Submit Button
+
                     SizedBox(
                       width: double.infinity,
                       height: 50,
@@ -281,12 +305,15 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                                 width: 20,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                  valueColor:
+                                      AlwaysStoppedAnimation<Color>(Colors.white),
                                 ),
                               )
                             : Text(
                                 'Record Mood',
-                                style: AppTextStyles.button.copyWith(color: AppColors.textSecondary),
+                                style: AppTextStyles.button.copyWith(
+                                  color: AppColors.textSecondary,
+                                ),
                               ),
                       ),
                     ),
@@ -294,9 +321,9 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                 ),
               ),
             ),
+
             SizedBox(height: 24),
-            
-            // Mood History
+
             Text(
               'Recent Mood History',
               style: AppTextStyles.headline2.copyWith(
@@ -304,7 +331,7 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
               ),
             ),
             SizedBox(height: 16),
-            
+
             _isLoading
                 ? Center(
                     child: CircularProgressIndicator(color: AppColors.primary),
@@ -315,7 +342,8 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
                         decoration: AppDecorations.glassCard,
                         child: Column(
                           children: [
-                            Icon(Icons.insights, size: 48, color: AppColors.textSecondary),
+                            Icon(Icons.insights,
+                                size: 48, color: AppColors.textSecondary),
                             SizedBox(height: 12),
                             Text(
                               'No mood data yet',
@@ -381,6 +409,4 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
       ),
     );
   }
-
-  
 }

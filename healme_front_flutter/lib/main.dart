@@ -1,5 +1,9 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
+import 'package:healme_front_flutter/pages/journal_tracker_page.dart';
+import 'package:healme_front_flutter/pages/mood_tracker_page.dart';
+import 'package:healme_front_flutter/pages/sleep_tracker_page.dart';
+import 'package:healme_front_flutter/pages/therapist_list_page.dart';
 import 'package:provider/provider.dart';
 import 'services/auth_service.dart';
 import 'pages/login_page.dart';
@@ -18,6 +22,13 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => AuthService()),
       ],
       child: MaterialApp(
+        routes: {
+    '/home': (context) => HomePage(),
+    '/mood': (context) => MoodTrackerPage(),
+    '/sleep': (context) => SleepTrackerPage(),
+    '/therapists': (context) => TherapistListPage(),
+    '/journal': (context) => JournalTrackerPage(),
+  },
         title: 'HealMe - Mental Health App',
         theme: ThemeData(
           fontFamily: "Montserrat",

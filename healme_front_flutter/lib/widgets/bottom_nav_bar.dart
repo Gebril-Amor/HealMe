@@ -35,16 +35,17 @@ class CustomBottomNavBar extends StatelessWidget {
           activeIcon: Icon(Icons.bedtime),
           label: 'Sleep',
         ),
+               BottomNavigationBarItem(
+          icon: Icon(Icons.book_outlined),
+          activeIcon: Icon(Icons.book),
+          label: 'Journal',
+        ),
         BottomNavigationBarItem(
           icon: Icon(Icons.chat_bubble_outline),
           activeIcon: Icon(Icons.chat),
           label: 'Chat',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person_outlined),
-          activeIcon: Icon(Icons.person),
-          label: 'Profile',
-        ),
+ 
       ],
     );
   }

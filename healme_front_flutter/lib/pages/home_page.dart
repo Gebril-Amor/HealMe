@@ -794,7 +794,7 @@ class _HomePageState extends State<HomePage> {
             case 3:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TherapistListPage()),
+                MaterialPageRoute(builder: (context) => JournalTrackerPage()),
               );
               break;
             case 4:
