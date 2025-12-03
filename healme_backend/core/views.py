@@ -591,3 +591,40 @@ Journal entries:
 
     except Exception as e:
         return Response({"error": str(e)}, status=500)
+    
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def ai_chat_reply(request):
+    """
+    Generate an AI response to a user's chat message (Gemini).
+    """
+    try:
+        user_message = request.data.get("message", "")
+
+        if not user_message or user_message.strip() == "":
+            return Response(
+                {"error": "Message field cannot be empty."},
+                status=400
+            )
+
+        ai_prompt = f"""
+You are a supportive assistant. Respond in a short, warm, simple tone.
+
+User said:
+{user_message}
+"""
+
+        response = client.models.generate_content(
+            model=model_name,
+            contents=ai_prompt
+        )
+
+        ai_reply = response.text
+
+        return Response({
+            "reply": ai_reply
+        }, status=200)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)

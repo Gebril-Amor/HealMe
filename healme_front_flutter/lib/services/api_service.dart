@@ -274,4 +274,24 @@ Future<String> getUserJournalInsight(int userId) async {
     throw Exception('Failed to load journal insights: ${response.statusCode}');
   }
 }
+
+Future<String> aiChatReply(String message) async {
+  final response = await http.post(
+    Uri.parse('$baseUrl/ai-chat/'),
+    headers: headers,
+    body: json.encode({
+      "message": message,
+     
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    final jsonResponse = json.decode(response.body);
+    // Extract the reply text
+    return jsonResponse['reply'] ?? 'No AI reply available';
+  } else {
+    throw Exception('Failed to get AI reply: ${response.statusCode}');
+  }
+}
+
 }

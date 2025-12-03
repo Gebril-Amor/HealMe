@@ -32,5 +32,6 @@ urlpatterns = [
     path("moods/<int:user_id>/insights/", get_user_mood_insight),
     path("sleep/<int:user_id>/insights/", get_user_sleep_insight),
     path("journal/<int:user_id>/insights/", get_user_journal_insight),
+    path("ai-chat/", views.ai_chat_reply, name="ai_chat"),
 
 ]

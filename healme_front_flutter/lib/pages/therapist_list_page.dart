@@ -1,5 +1,6 @@
 // lib/pages/therapist_list_page.dart
 import 'package:flutter/material.dart';
+import 'package:healme_front_flutter/pages/ai_chat_page.dart';
 import 'package:share_plus/share_plus.dart';
 import '../services/api_service.dart';
 import '../models/therapist.dart';
@@ -195,13 +196,28 @@ class _TherapistListPageState extends State<TherapistListPage> {
   Widget build(BuildContext context) {
     return AppScaffold(
       appBar: AppBar(
-        title: Text(
-          'Our Therapists',
-          style: AppTextStyles.headline1,
-        ),
-        backgroundColor: AppColors.primary,
-        elevation: 0,
-      ),
+  title: Text(
+    'Our Therapists',
+    style: AppTextStyles.headline1,
+  ),
+  backgroundColor: AppColors.primary,
+  elevation: 0,
+  actions: [
+    IconButton(
+      icon: Icon(Icons.smart_toy, color: Colors.white),
+      tooltip: "Talk to AI",
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AiChatPage(), // <-- Change to your AI chat page
+          ),
+        );
+      },
+    ),
+  ],
+),
+
       body: _isLoading
           ? Center(
               child: CircularProgressIndicator(color: AppColors.primary),
