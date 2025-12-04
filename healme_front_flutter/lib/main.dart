@@ -1,5 +1,7 @@
 // lib/main.dart
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:healme_front_flutter/firebase_options.dart';
 import 'package:healme_front_flutter/pages/journal_tracker_page.dart';
 import 'package:healme_front_flutter/pages/mood_tracker_page.dart';
 import 'package:healme_front_flutter/pages/sleep_tracker_page.dart';
@@ -10,7 +12,14 @@ import 'pages/login_page.dart';
 import 'pages/register_page.dart';
 import 'pages/home_page.dart';
 
-void main() {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();  
+
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }      
   runApp(MyApp());
 }
 
@@ -23,23 +32,23 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         routes: {
-    '/home': (context) => HomePage(),
-    '/mood': (context) => MoodTrackerPage(),
-    '/sleep': (context) => SleepTrackerPage(),
-    '/therapists': (context) => TherapistListPage(),
-    '/journal': (context) => JournalTrackerPage(),
-  },
+          '/home': (context) => HomePage(),
+          '/mood': (context) => MoodTrackerPage(),
+          '/sleep': (context) => SleepTrackerPage(),
+          '/therapists': (context) => TherapistListPage(),
+          '/journal': (context) => JournalTrackerPage(),
+        },
         title: 'HealMe - Mental Health App',
         theme: ThemeData(
           fontFamily: "Montserrat",
           brightness: Brightness.dark,
           scaffoldBackgroundColor: const Color(0xFF0A0A12),
-          colorScheme: ColorScheme.dark(
+          colorScheme: const ColorScheme.dark(
             primary: Color(0xFFFF64FF),
             secondary: Color(0xFF64C8FF),
             tertiary: Color(0xFFB450DC),
           ),
-          bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
             backgroundColor: Color(0xFF1A1A2E),
             selectedItemColor: Color(0xFFFF64FF),
             unselectedItemColor: Colors.grey,
@@ -51,7 +60,8 @@ class MyApp extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.done) {
               return snapshot.hasData ? HomePage() : LoginPage();
             }
-            return Scaffold(body: Center(child: CircularProgressIndicator()));
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()));
           },
         ),
         debugShowCheckedModeBanner: false,

@@ -1,6 +1,7 @@
 // lib/pages/therapist_list_page.dart
 import 'package:flutter/material.dart';
 import 'package:healme_front_flutter/pages/ai_chat_page.dart';
+import 'package:healme_front_flutter/pages/anon_chat_page.dart';
 import 'package:share_plus/share_plus.dart';
 import '../services/api_service.dart';
 import '../models/therapist.dart';
@@ -195,7 +196,7 @@ class _TherapistListPageState extends State<TherapistListPage> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      appBar: AppBar(
+appBar: AppBar(
   title: Text(
     'Our Therapists',
     style: AppTextStyles.headline1,
@@ -203,6 +204,7 @@ class _TherapistListPageState extends State<TherapistListPage> {
   backgroundColor: AppColors.primary,
   elevation: 0,
   actions: [
+    // AI Chat Button
     IconButton(
       icon: Icon(Icons.smart_toy, color: Colors.white),
       tooltip: "Talk to AI",
@@ -210,7 +212,21 @@ class _TherapistListPageState extends State<TherapistListPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => AiChatPage(), // <-- Change to your AI chat page
+            builder: (context) => AiChatPage(),
+          ),
+        );
+      },
+    ),
+
+    // Anonymous Chat Button
+    IconButton(
+      icon: Icon(Icons.group, color: Colors.white),
+      tooltip: "Join Anonymous Chat",
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>  AnonChatPage(),
           ),
         );
       },

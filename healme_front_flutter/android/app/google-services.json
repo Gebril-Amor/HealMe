@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "349525324088",
+    "project_id": "healme-820ba",
+    "storage_bucket": "healme-820ba.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:349525324088:android:644f15fcc14786d0db11cd",
+        "android_client_info": {
+          "package_name": "com.example.healme_front_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXjuwkvqV2N_gPsOCevN8HazckIAkBBgQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
