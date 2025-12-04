@@ -8,11 +8,12 @@ import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 import '../theme/app_decorations.dart';
 import '../widgets/app_scaffold.dart';
-import '../widgets/background_bubbles.dart';
 import 'register_page.dart';
 import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -215,12 +216,18 @@ class _LoginPageState extends State<LoginPage> {
       
       // Create user from user data
       final user = User.fromJson(userData);
-      
-      // Extract patient ID from profile (profile ID is the patient ID)
-      final patientId = profileData['id'];
 
-      // Save user with patient ID
-      await authService.saveUser(user, patientId: patientId);
+      // Depending on user type, save patientId or therapistId
+      if (user.userType == 'patient') {
+        final patientId = profileData['id'];
+        await authService.saveUser(user, patientId: patientId);
+      } else if (user.userType == 'therapeute') {
+        final therapistId = profileData['id'];
+        await authService.saveUser(user, therapistId: therapistId);
+      } else {
+        // Fallback: save user without ids
+        await authService.saveUser(user);
+      }
 
       Navigator.pushReplacement(
         context,

@@ -21,6 +21,8 @@ import 'journal_tracker_page.dart';
 import '../widgets/bottom_nav_bar.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -328,7 +330,7 @@ class _HomePageState extends State<HomePage> {
             SizedBox(height: 12),
             
             // Line Chart
-            Container(
+            SizedBox(
               height: 150,
               child: LineChart(
                 LineChartData(

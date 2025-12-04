@@ -1,25 +1,27 @@
 // lib/pages/therapist_chat_page.dart
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../models/message.dart';
+import '../models/user.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
-import '../models/user.dart';
-import '../models/message.dart';
+import '../services/chat_service.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
-import '../theme/app_decorations.dart';
 import '../widgets/app_scaffold.dart';
-import 'dart:async';
 
 class TherapistChatPage extends StatefulWidget {
   final int patientId;
   final User patient;
 
   const TherapistChatPage({
-    Key? key,
+    super.key,
     required this.patientId,
     required this.patient,
-  }) : super(key: key);
+  });
 
   @override
   _TherapistChatPageState createState() => _TherapistChatPageState();
@@ -34,18 +36,44 @@ class _TherapistChatPageState extends State<TherapistChatPage> {
   late int _therapistId;
   late AuthService _authService;
 
+  StreamSubscription<List<Message>>? _messagesSub;
+
   @override
   void initState() {
     super.initState();
     _authService = Provider.of<AuthService>(context, listen: false);
-    _therapistId = _authService.patientId!;
-    _loadMessages();
-    _setupAutoRefresh();
+    // Use therapistId from AuthService (was incorrectly using patientId)
+    _therapistId = _authService.therapistId ?? 0;
+    if (_therapistId == 0) {
+      debugPrint('Warning: therapistId is not set in AuthService.');
+    }
+    // Subscribe to real-time messages
+    _messagesSub = ChatService()
+        .messagesStream(widget.patientId, _therapistId)
+        .listen((messages) {
+      if (mounted) {
+        setState(() {
+          _messages
+            ..clear()
+            ..addAll(messages);
+          _isLoading = false;
+        });
+        _scrollToBottom();
+      }
+    }, onError: (e) {
+      if (mounted) setState(() => _isLoading = false);
+      print('Therapist chat stream error: $e');
+    });
+
+    // Mark messages as read for this conversation (messages sent by patient)
+    if (_therapistId != 0) {
+      ChatService().markAllRead(widget.patientId, _therapistId, forSender: 'patient');
+    }
   }
 
   @override
   void dispose() {
-    _timer.cancel();
+    _messagesSub?.cancel();
     _messageController.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -96,7 +124,7 @@ class _TherapistChatPageState extends State<TherapistChatPage> {
     }
 
     try {
-      await ApiService().sendMessage(
+      await ChatService().sendMessage(
         contenu: messageText,
         patientId: widget.patientId,
         therapistId: _therapistId,
@@ -115,7 +143,6 @@ class _TherapistChatPageState extends State<TherapistChatPage> {
         ));
       });
       _scrollToBottom();
-      _loadMessages();
 
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -1,10 +1,11 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import '../theme/app_colors.dart';
 
 class BackgroundBubbles extends StatelessWidget {
+  const BackgroundBubbles({super.key});
+
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(

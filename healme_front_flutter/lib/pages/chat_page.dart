@@ -1,25 +1,26 @@
 // lib/pages/chat_page.dart
+import 'dart:async'; // Timer
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../services/api_service.dart';
-import '../services/auth_service.dart';
+
 import '../models/message.dart';
 import '../models/therapist.dart';
+import '../services/auth_service.dart';
+import '../services/chat_service.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
-import '../theme/app_decorations.dart';
 import '../widgets/app_scaffold.dart';
-import 'dart:async'; // Timer
 
 class ChatPage extends StatefulWidget {
   final int therapistId;
   final Therapist therapist;
 
   const ChatPage({
-    Key? key,
+    super.key,
     required this.therapistId,
     required this.therapist,
-  }) : super(key: key);
+  });
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -31,7 +32,7 @@ class _ChatPageState extends State<ChatPage> {
   bool _isLoading = true;
   late int _patientId;
   late AuthService _authService;
-  late Timer _timer;
+  StreamSubscription<List<Message>>? _messagesSub;
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -42,30 +43,10 @@ class _ChatPageState extends State<ChatPage> {
     _authService = Provider.of<AuthService>(context, listen: false);
     _patientId = _authService.patientId!;
 
-    _loadMessages();
-    _setupAutoRefresh();
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    _messageController.dispose();
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _setupAutoRefresh() {
-    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
-      _loadMessages();
-    });
-  }
-
-  Future<void> _loadMessages() async {
-    try {
-      final messages = await ApiService().getMessages(
-        _patientId,
-        widget.therapistId,
-      );
+    // Subscribe to realtime messages via Firebase
+    _messagesSub = ChatService()
+        .messagesStream(_patientId, widget.therapistId)
+        .listen((messages) {
       if (mounted) {
         setState(() {
           _messages
@@ -75,11 +56,21 @@ class _ChatPageState extends State<ChatPage> {
         });
         _scrollToBottom();
       }
-    } catch (e) {
+    }, onError: (e) {
       if (mounted) setState(() => _isLoading = false);
-      print('Error loading messages: $e');
-    }
+      print('Chat stream error: $e');
+    });
   }
+
+  @override
+  void dispose() {
+    _messagesSub?.cancel();
+    _messageController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  // Real-time messages handled by ChatService stream subscription
 
   Future<void> _sendMessage() async {
     if (_messageController.text.trim().isEmpty) return;
@@ -99,14 +90,15 @@ class _ChatPageState extends State<ChatPage> {
     }
 
     try {
-      await ApiService().sendMessage(
+      // Send via Firebase Realtime Database
+      await ChatService().sendMessage(
         contenu: messageText,
         patientId: _patientId,
         therapistId: widget.therapistId,
         senderType: 'patient',
       );
 
-      // Add message locally
+      // Add message locally for immediate UI feedback
       setState(() {
         _messages.add(Message(
           id: DateTime.now().millisecondsSinceEpoch,
@@ -118,7 +110,6 @@ class _ChatPageState extends State<ChatPage> {
         ));
       });
       _scrollToBottom();
-      _loadMessages();
 
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

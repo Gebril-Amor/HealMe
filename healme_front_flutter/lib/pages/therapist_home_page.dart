@@ -12,6 +12,8 @@ import '../widgets/app_scaffold.dart';
 import 'therapist_chat_page.dart';
 
 class TherapistHomePage extends StatefulWidget {
+  const TherapistHomePage({super.key});
+
   @override
   _TherapistHomePageState createState() => _TherapistHomePageState();
 }
@@ -28,9 +30,16 @@ class _TherapistHomePageState extends State<TherapistHomePage> {
 
   Future<void> _loadPatients() async {
     try {
-      final patients = await ApiService().getAllPatients();
+      // Use therapist-specific conversations endpoint so we get unread counts and last message
+      final authService = Provider.of<AuthService>(context, listen: false);
+      final therapistId = authService.therapistId;
+      if (therapistId == null) {
+        throw Exception('Therapist ID not found. Please login as a therapist.');
+      }
+      final conversations = await ApiService().getTherapistConversations(therapistId);
       setState(() {
-        _patients = patients;
+        // conversations is a list of maps with patient_id, patient_name, patient_email, last_message, unread_count
+        _patients = conversations;
         _isLoading = false;
       });
     } catch (e) {
@@ -51,6 +60,7 @@ class _TherapistHomePageState extends State<TherapistHomePage> {
     final patientId = patient['patient_id'] ?? 0;
     final patientName = patient['patient_name'] ?? 'Unknown Patient';
     final patientEmail = patient['patient_email'] ?? 'No email';
+    final unreadCount = patient['unread_count'] ?? 0;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -79,16 +89,22 @@ class _TherapistHomePageState extends State<TherapistHomePage> {
             padding: EdgeInsets.all(16),
             child: Row(
               children: [
-                // Patient Avatar
+                // Patient Avatar (highlight if unread)
                 Container(
                   width: 50,
                   height: 50,
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [AppColors.secondary, AppColors.primary],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
+                    gradient: unreadCount > 0
+                        ? LinearGradient(
+                            colors: [Colors.orange, AppColors.primary],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          )
+                        : LinearGradient(
+                            colors: [AppColors.secondary, AppColors.primary],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
@@ -122,32 +138,57 @@ class _TherapistHomePageState extends State<TherapistHomePage> {
                   ),
                 ),
                 
-                // Chat Icon
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: AppColors.primaryGradient,
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    icon: Icon(Icons.chat_bubble_outline, size: 20, color: Colors.white),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TherapistChatPage(
-                            patientId: patientId,
-                            patient: User(
-                              id: patientId,
-                              username: patientName,
-                              email: patientEmail,
-                              userType: 'patient',
+                // Chat Icon with unread badge
+                Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: AppColors.primaryGradient,
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        icon: Icon(Icons.chat_bubble_outline, size: 20, color: Colors.white),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TherapistChatPage(
+                                patientId: patientId,
+                                patient: User(
+                                  id: patientId,
+                                  username: patientName,
+                                  email: patientEmail,
+                                  userType: 'patient',
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        tooltip: 'Start chat',
+                      ),
+                    ),
+                    if (unreadCount > 0)
+                      Positioned(
+                        right: 0,
+                        top: 0,
+                        child: Container(
+                          padding: EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 1),
+                          ),
+                          constraints: BoxConstraints(minWidth: 20, minHeight: 20),
+                          child: Center(
+                            child: Text(
+                              unreadCount > 99 ? '99+' : unreadCount.toString(),
+                              style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
-                      );
-                    },
-                    tooltip: 'Start chat',
-                  ),
+                      ),
+                  ],
                 ),
               ],
             ),
@@ -260,7 +301,7 @@ class _TherapistHomePageState extends State<TherapistHomePage> {
                       ),
                       SizedBox(height: 16),
                       
-                      ..._patients.map((patient) => _buildPatientCard(patient)).toList(),
+                      ..._patients.map((patient) => _buildPatientCard(patient)),
                     ],
                   ),
                 ),

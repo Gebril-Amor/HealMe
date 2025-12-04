@@ -1,0 +1,50 @@
+# Top-level gitignore for project-wide artifacts
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+/.vscode/
+.idea/
+*.iml
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.Python
+env/
+.env
+.env.*
+.venv/
+venv/
+
+# Django
+/healme_backend/db.sqlite3
+local_settings.py
+
+# Flutter / Dart
+/healme_front_flutter/.dart_tool/
+/healme_front_flutter/.pub-cache/
+/healme_front_flutter/.packages
+/healme_front_flutter/build/
+/healme_front_flutter/.flutter-plugins
+/healme_front_flutter/.flutter-plugins-dependencies
+/healme_front_flutter/.dart_tool/
+/healme_front_flutter/.gradle/
+
+# Firebase / Google services
+/healme_front_flutter/lib/firebase_options.dart
+/healme_front_flutter/android/app/google-services.json
+/healme_front_flutter/ios/GoogleService-Info.plist
+/.firebase
+/.firebaserc
+firebase-debug.log
+
+# Logs
+*.log
+
+# Misc
+.DS_Store
+*.swp

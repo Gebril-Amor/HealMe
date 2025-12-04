@@ -11,6 +11,8 @@ import '../widgets/app_scaffold.dart';
 import 'home_page.dart';
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }

@@ -38,6 +38,8 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   fl_chart: ^1.1.1
+  firebase_core: ^4.2.1   # Use a specific, stable version number
+  firebase_database: ^12.1.0
 
 dev_dependencies:
   flutter_test:

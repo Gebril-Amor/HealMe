@@ -10,6 +10,8 @@ import '../theme/app_decorations.dart';
 import '../widgets/app_scaffold.dart';
 
 class MoodTrackerPage extends StatefulWidget {
+  const MoodTrackerPage({super.key});
+
   @override
   _MoodTrackerPageState createState() => _MoodTrackerPageState();
 }

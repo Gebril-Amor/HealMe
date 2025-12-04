@@ -10,6 +10,8 @@ import '../theme/app_decorations.dart';
 import '../widgets/app_scaffold.dart';
 
 class JournalTrackerPage extends StatefulWidget {
+  const JournalTrackerPage({super.key});
+
   @override
   _JournalTrackerPageState createState() => _JournalTrackerPageState();
 }

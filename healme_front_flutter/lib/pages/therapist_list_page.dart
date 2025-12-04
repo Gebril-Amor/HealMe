@@ -1,15 +1,18 @@
 // lib/pages/therapist_list_page.dart
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
-import '../services/api_service.dart';
+
 import '../models/therapist.dart';
+import '../services/api_service.dart';
 import '../theme/app_colors.dart';
-import '../theme/app_text_styles.dart';
 import '../theme/app_decorations.dart';
+import '../theme/app_text_styles.dart';
 import '../widgets/app_scaffold.dart';
 import 'chat_page.dart';
 
 class TherapistListPage extends StatefulWidget {
+  const TherapistListPage({super.key});
+
   @override
   _TherapistListPageState createState() => _TherapistListPageState();
 }
@@ -81,15 +84,30 @@ class _TherapistListPageState extends State<TherapistListPage> {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChatPage(
-                therapistId: therapist.userId!,
-                therapist: therapist,
+          // Debug: ensure therapist userId is valid before navigating
+          debugPrint('Therapist tapped: ${therapist.name}, id=${therapist.id}');
+          if (therapist.id <= 0) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Cannot open chat: invalid therapist id')),
+            );
+            return;
+          }
+          try {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChatPage(
+                  therapistId: therapist.id,
+                  therapist: therapist,
+                ),
               ),
-            ),
-          );
+            );
+          } catch (e, st) {
+            debugPrint('Navigation error: $e\n$st');
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Failed to open chat: $e')),
+            );
+          }
         },
         child: AnimatedContainer(
           duration: Duration(milliseconds: 300),
@@ -159,26 +177,66 @@ class _TherapistListPageState extends State<TherapistListPage> {
                       onPressed: () => _shareTherapist(therapist),
                       tooltip: 'Share therapist',
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: AppColors.primaryGradient,
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        icon: Icon(Icons.chat, size: 20, color: Colors.white),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ChatPage(
-                                therapistId: therapist.userId!,
-                                therapist: therapist,
+                    // Chat button with unread badge
+                    Stack(
+                      alignment: Alignment.topRight,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: AppColors.primaryGradient,
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            icon: Icon(Icons.chat, size: 20, color: Colors.white),
+                            onPressed: () {
+                              debugPrint('Chat icon pressed: ${therapist.name}, id=${therapist.id}');
+                              if (therapist.id <= 0) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Cannot open chat: invalid therapist id')),
+                                );
+                                return;
+                              }
+                              try {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ChatPage(
+                                      therapistId: therapist.id,
+                                      therapist: therapist,
+                                    ),
+                                  ),
+                                );
+                              } catch (e, st) {
+                                debugPrint('Navigation error: $e\n$st');
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Failed to open chat: $e')),
+                                );
+                              }
+                            },
+                            tooltip: 'Start chat',
+                          ),
+                        ),
+                        if ((therapist.unreadCount ?? 0) > 0)
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: Container(
+                              padding: EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.white, width: 1),
+                              ),
+                              constraints: BoxConstraints(minWidth: 20, minHeight: 20),
+                              child: Center(
+                                child: Text(
+                                  therapist.unreadCount > 99 ? '99+' : therapist.unreadCount.toString(),
+                                  style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                                ),
                               ),
                             ),
-                          );
-                        },
-                        tooltip: 'Start chat',
-                      ),
+                          ),
+                      ],
                     ),
                   ],
                 ),

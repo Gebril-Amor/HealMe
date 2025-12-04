@@ -1,7 +1,6 @@
 // lib/services/api_service.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../models/user.dart';
 import '../models/therapist.dart';
 import '../models/message.dart';
 import '../models/mood.dart';
@@ -186,15 +185,17 @@ class ApiService {
   }
 
   Future<List<dynamic>> getTherapistConversations(int therapistId) async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/therapist/$therapistId/conversations/'), // ✅ Fixed: removed duplicate /api
-      headers: headers,
-    );
+    final url = '$baseUrl/therapist/$therapistId/conversations/';
+    final uri = Uri.parse(url);
+    final response = await http.get(uri, headers: headers);
 
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
-      throw Exception('Failed to load therapist conversations: ${response.statusCode}');
+      // Include response body for easier debugging
+      final body = response.body;
+      print('GET $url -> ${response.statusCode} : $body');
+      throw Exception('Failed to load therapist conversations: ${response.statusCode} - ${body}');
     }
   }
 

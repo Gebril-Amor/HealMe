@@ -43,3 +43,25 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Local config, IDE and Firebase files (sensitive or machine-specific)
+# Firebase generated options and local service files
+/lib/firebase_options.dart
+/android/app/google-services.json
+/ios/GoogleService-Info.plist
+
+# Firebase CLI and debug
+/.firebase
+/.firebaserc
+firebase-debug.log
+
+# Local env files
+.env
+.env.*
+
+# VS Code workspace
+/.vscode/
+
+# Dart/Flutter helper files
+.flutter-plugins
+.packages

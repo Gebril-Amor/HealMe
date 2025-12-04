@@ -10,6 +10,8 @@ import '../theme/app_decorations.dart';
 import '../widgets/app_scaffold.dart';
 
 class SleepTrackerPage extends StatefulWidget {
+  const SleepTrackerPage({super.key});
+
   @override
   _SleepTrackerPageState createState() => _SleepTrackerPageState();
 }

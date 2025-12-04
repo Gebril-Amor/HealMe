@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
 import '../widgets/background_bubbles.dart';
 
 class AppScaffold extends StatelessWidget {
@@ -11,14 +10,14 @@ class AppScaffold extends StatelessWidget {
   final bool showBackgroundBubbles;
 
   const AppScaffold({
-    Key? key,
+    super.key,
     required this.body,
     this.appBar,
     this.floatingActionButton,
     this.bottomNavigationBar, // ← Add this
     this.backgroundColor,
     this.showBackgroundBubbles = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

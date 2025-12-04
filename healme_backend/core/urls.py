@@ -25,7 +25,7 @@ urlpatterns = [
     path('check-auth/', views.check_auth, name='check_auth'),
     path('conversation/<int:patient_id>/<int:therapist_id>/', get_conversation_messages),
     path('send-message/', send_message),
-    path('api/therapist/<int:therapist_id>/conversations/', views.therapist_conversations, name='therapist_conversations'),
+    path('therapist/<int:therapist_id>/conversations/', views.therapist_conversations, name='therapist_conversations'),
     path('all-patients/', views.all_patients, name='all_patients'),
     path('', include(router.urls)),
     path('test-gemini/', GeminiTestView.as_view(), name='test-gemini-api'),
