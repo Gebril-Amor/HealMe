@@ -16,7 +16,10 @@ from rest_framework.decorators import *
 from django.http import JsonResponse
 from django.views import View
 from google import genai
+from dotenv import load_dotenv
 import os
+
+load_dotenv()  # loads the .env file
 
 @api_view(['GET'])
 def get_user_mood(request, user_id):
@@ -420,7 +423,7 @@ def all_patients(request):
 
 # --- Initialization ---
 # Get API Key securely from environment variables
-GEMINI_API_KEY = 'AIzaSyAk7mY_lYgwcP5Yyx80aczY78hbN5iGG7w'
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 # Initialize the client (make sure GEMINI_API_KEY is set in your .env)
 client = genai.Client(api_key=GEMINI_API_KEY) 
 model_name = 'gemini-2.5-flash'
