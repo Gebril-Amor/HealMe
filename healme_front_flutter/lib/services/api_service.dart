@@ -73,10 +73,9 @@ class ApiService {
     }
   }
 
-  // Message endpoints - UPDATED to match your exact URLs
   Future<List<Message>> getMessages(int patientId, int therapistId) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/conversation/$patientId/$therapistId/'), // ✅ Your exact URL
+      Uri.parse('$baseUrl/conversation/$patientId/$therapistId/'),
       headers: headers,
     );
 
@@ -112,10 +111,10 @@ class ApiService {
     }
   }
 
-  // Mood tracking endpoints - UPDATED to match your URLs
+
   Future<List<Mood>> getUserMood(int userId) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/users/$userId/mood/'), // ✅ Matches path('users/<int:user_id>/mood/', ...)
+      Uri.parse('$baseUrl/users/$userId/mood/'), 
       headers: headers,
     );
 
@@ -141,10 +140,10 @@ class ApiService {
     }
   }
 
-  // Sleep tracking endpoints - UPDATED to match your URLs
+
   Future<List<Sleep>> getUserSleep(int userId) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/users/$userId/sleep/'), // ✅ Matches path('users/<int:user_id>/sleep/', ...)
+      Uri.parse('$baseUrl/users/$userId/sleep/'), 
       headers: headers,
     );
 
@@ -159,7 +158,7 @@ class ApiService {
   Future<Sleep> addSleep(Map<String, dynamic> sleepData) async {
     
     final response = await http.post(
-      Uri.parse('$baseUrl/sommeils/'), // ✅ From router.urls
+      Uri.parse('$baseUrl/sommeils/'),
       headers: headers,
       body: json.encode(sleepData),
     );

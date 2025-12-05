@@ -6,6 +6,7 @@ import 'package:healme_front_flutter/pages/journal_tracker_page.dart';
 import 'package:healme_front_flutter/pages/mood_tracker_page.dart';
 import 'package:healme_front_flutter/pages/sleep_tracker_page.dart';
 import 'package:healme_front_flutter/pages/therapist_list_page.dart';
+import 'package:healme_front_flutter/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'services/auth_service.dart';
 import 'pages/login_page.dart';
@@ -28,17 +29,24 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => AuthService()),
+        ChangeNotifierProvider(create: (_) => AuthService()),
       ],
       child: MaterialApp(
-        routes: {
-          '/home': (context) => HomePage(),
-          '/mood': (context) => MoodTrackerPage(),
-          '/sleep': (context) => SleepTrackerPage(),
-          '/therapists': (context) => TherapistListPage(),
-          '/journal': (context) => JournalTrackerPage(),
-        },
         title: 'HealMe - Mental Health App',
+        debugShowCheckedModeBanner: false,
+
+       
+        initialRoute: '/',
+        routes: {
+          '/': (_) => const SplashScreen(),
+          '/login': (_) => LoginPage(),
+          '/home': (_) => HomePage(),
+          '/mood': (_) => MoodTrackerPage(),
+          '/sleep': (_) => SleepTrackerPage(),
+          '/therapists': (_) => TherapistListPage(),
+          '/journal': (_) => JournalTrackerPage(),
+        },
+
         theme: ThemeData(
           fontFamily: "Montserrat",
           brightness: Brightness.dark,
@@ -54,17 +62,6 @@ class MyApp extends StatelessWidget {
             unselectedItemColor: Colors.grey,
           ),
         ),
-        home: FutureBuilder(
-          future: AuthService().getUser(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return snapshot.hasData ? HomePage() : LoginPage();
-            }
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()));
-          },
-        ),
-        debugShowCheckedModeBanner: false,
       ),
     );
   }

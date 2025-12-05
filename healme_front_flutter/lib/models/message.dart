@@ -19,11 +19,11 @@ class Message {
   factory Message.fromJson(Map<String, dynamic> json) {
      return Message(
       id: json['id'],
-      contenu: json['contenu'] ?? '',  // ← Use 'contenu' not 'content'
+      contenu: json['contenu'] ?? '',  
       date: DateTime.parse(json['date']),
       senderType: json['sender_type'] ?? 'patient',
-      patientId: json['patient'] ?? 0,  // Django might return 'patient' not 'patientId'
-      therapistId: json['therapeute'] ?? 0, // Django might return 'therapeute' not 'therapistId'
+      patientId: json['patient'] ?? 0,  
+      therapistId: json['therapeute'] ?? 0, 
     );
   }
 }

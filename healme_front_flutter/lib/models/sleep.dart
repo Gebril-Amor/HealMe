@@ -26,7 +26,7 @@ factory Sleep.fromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> toJson() {
   return {
-    'dureeHeures': hours,    // ← Also update toJson to be consistent
+    'dureeHeures': hours,   
     'qualite': quality,
     'date': date.toIso8601String(),
     'patient': patientId,

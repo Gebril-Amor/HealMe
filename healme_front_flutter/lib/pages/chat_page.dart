@@ -38,7 +38,7 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
 
-    // Initialize AuthService and get patient ID
+    
     _authService = Provider.of<AuthService>(context, listen: false);
     _patientId = _authService.patientId!;
 

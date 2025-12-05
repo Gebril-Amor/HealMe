@@ -18,8 +18,8 @@ class Therapist {
   factory Therapist.fromJson(Map<String, dynamic> json) {
     return Therapist(
       id: json['id'],
-      userId: json['user_id'],   // ✅ top-level
-      name: json['username'] ?? 'Therapist',  // ✅ top-level
+      userId: json['user_id'],   
+      name: json['username'] ?? 'Therapist',  
       email: json['email'] ?? '',
       specialty: json['specialite'] ?? 'Mental Health',
       unreadCount: json['unread_count'] ?? 0,
